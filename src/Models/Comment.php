@@ -14,7 +14,14 @@ class Comment extends Model
     
     public function author()
     {
-        return $this->morphTo('author');
+        $relation = $this->morphTo('author');
+        if (config('comments.anonymousAuthors.enabled', true))
+        {
+            $relation->withDefault(config('comments.anonymousAuthors.attributes', [
+                'name' => 'Anonymous'
+            ]));
+        }
+        return $relation;
     }
     
     public function commentable()
